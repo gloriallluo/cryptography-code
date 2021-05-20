@@ -28,7 +28,6 @@ void encode(State *state) {
         if (i < ROUND) mixCols(state);
         addRoundKey(state, &W[i]);
     }
-    // transpose(state);
 }
 
 /** decode with AES-128 */
@@ -40,7 +39,6 @@ void decode(State *state) {
         addRoundKey(state, &W[i]);
         if (i > 0) invMixCols(state);
     }
-    // transpose(state);
 }
 
 int main() {
@@ -48,11 +46,11 @@ int main() {
     State vec = 0;
     u8 init[16] = { 0 };
 
-    Key key = *(Key*)"\x32\x81\xf1\x9a\x3b\xbc\x82\x1d\xc8\x2c\xff\xe0\x8a\x00\x73\x6c";
+    Key key = *(Key*) "thekeyforaes128";
     keyExpansion(key);
 #ifdef TEST
     for (int i = 0; i < 16; i++)
-        init[i] = rand() & 0xff;
+        init[i] = 0;
     State state;
     memcpy(&state, init, 16);
 

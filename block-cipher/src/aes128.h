@@ -7,6 +7,9 @@
 
 using std::memcpy;
 
+using u8 = uint8_t;
+using u32 = uint32_t;
+
 
 /** S box */
 const u8 S[256] = {
@@ -167,16 +170,18 @@ const u8 xtime_e[256] = {
 
 /** definitions for MixColumns */
 #define times02(x) xtime[(x)]
-// #define times04(x) (times02(times02(x)))
-// #define times08(x) (times04(times02(x)))
-#define times03(x) xtime_3[(x)]
-#define times09(x) xtime_9[(x)]
-#define times0b(x) xtime_b[(x)]
-#define times0d(x) xtime_d[(x)]
-#define times0e(x) xtime_e[(x)]
-
-using u8 = uint8_t;
-using u32 = uint32_t;
+#define times04(x) (times02(times02(x)))
+#define times08(x) (times04(times02(x)))
+#define times03(x) (times02(x) ^ x)
+// #define times03(x) xtime_3[(x)]
+#define times09(x) (times08(x) ^ x)
+// #define times09(x) xtime_9[(x)]
+#define times0b(x) (times08(x) ^ times02(x) ^ (x))
+// #define times0b(x) xtime_b[(x)]
+#define times0d(x) (times08(x) ^ times04(x) ^ x)
+// #define times0d(x) xtime_d[(x)]
+#define times0e(x) (times08(x) ^ times04(x) ^ times02(x))
+// #define times0e(x) xtime_e[(x)]
 
 /** State, 128 bits */
 using State = __uint128_t;

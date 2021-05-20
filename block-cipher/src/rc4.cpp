@@ -21,7 +21,8 @@ void swap(u8 &x, u8 &y) {
     u8 tmp = x; x = y; y = tmp;
 }
 
-/** KSA function 
+/** 
+ * KSA function 
  * shuffle S box according to key
 */
 void KSA() {
@@ -33,7 +34,8 @@ void KSA() {
     }
 }
 
-/** PRGA function 
+/** 
+ * PRGA function 
  * Used in key stream generating
  * @param output: output key stream
  * @param outLen: output length in byte
