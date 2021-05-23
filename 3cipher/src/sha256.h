@@ -18,9 +18,6 @@ struct State {
     u64 s[5][5] = {{ 0 }};
 
 public:
-    /** 
-     * default construction function 
-    */
     State() {}
 
     /**
@@ -28,7 +25,6 @@ public:
      * convert string to state
     */
     State(char *str) {
-        // assert(strlen(str) >= 200);
         u64 *l_ptr = (u64*)str;
         for (int x = 0; x < 5; x++)
             for (int y = 0; y < 5; y++)
@@ -36,7 +32,6 @@ public:
     }
 
     /**
-     * function get
      * @param xyz: position
      * @return: the bit at the specific position
     */
@@ -46,7 +41,6 @@ public:
     }
 
     /**
-     * function x
      * actually it's xor
      * @param d: a u64 array
     */

@@ -71,16 +71,37 @@
 
 ### 实现
 
+-   采用一个 5 * 5 的 u64 数组来存放状态。
+-   轮函数：进行 24 轮循环，每轮循环将 state 分别经过 thet、rho_n_pi、chi、iota 等变换。见 `sha256.cpp` 中的 `keccak` 函数。
+-   sponge 函数：对原消息进行 padding 以及分组，之后经过 `keccak` 函数，最后取 256 位得到 `digest` 数组。
+
 ### 正确性
+
+-   与 [ONLINE SHA-3 Keccak CALCULATOR](https://leventozturk.com/engineering/sha3/) 中的结果对比，运行了几个测例，运行方式为 `make t-sha3`。
+
+-   我的运行结果：
+
+    *分别为 ""、“abc“、" "、"hello world" 的哈希值*
+
+    ![SHA31](./img/SHA3-shell.png)
+
+-   ONLINE SHA-3 的结果：
+
+    ![SHA3-1](./img/SHA3-1.png)
+
+    ![SHA3-2](./img/SHA3-2.png)
+
+    ![SHA3-3](./img/SHA3-3.png)
+
+    ![SHA3-4](./img/SHA3-4.png)
 
 ### 效率
 
-
-
-## 参考文献
-
-
+-   运行方式为 `make sha3`。
+-   结果为 186.3636 Mbps。
 
 
 
-*注：算法效率通过运行10次并取平均所得，采用了-O1优化。*
+
+
+*注：算法效率通过运行10次并取平均所得，采用了 -O1 优化。*
