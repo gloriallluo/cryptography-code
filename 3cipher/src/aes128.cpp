@@ -1,22 +1,12 @@
 #include "aes128.h"
+#include <ctime>
 
 #define ROUND 10
 #define GROUP 128  // 16 K bits
 
-#ifndef TEST
 State plain[GROUP] = { 0 };
 State encrypt[GROUP] = { 0 };
 State decrypt[GROUP] = { 0 };
-#endif
-
-
-void printState(const State &s) {
-    u8 *b_ptr = (u8*)&s;
-    for (int i = 0; i < 16; i++) {
-        printf("%02x", b_ptr[i]);
-        if ((i & 3) == 3) printf(" ");
-    }   printf("\n");
-}
 
 
 /** encode with AES-128 */
@@ -42,35 +32,45 @@ void decode(State *state) {
 }
 
 int main() {
-    
     State vec = 0;
     u8 init[16] = { 0 };
 
     Key key = *(Key*) "thekeyforaes128";
     keyExpansion(key);
+    printKey(key);
+
 #ifdef TEST
-    for (int i = 0; i < 16; i++)
-        init[i] = 0;
-    State state;
-    memcpy(&state, init, 16);
+    // encrypt
+    for (int i = 0, vec = 0; i < 1; i++) {
+        for (int i = 0; i < 16; i++)
+            init[i] = rand() & 0xff;
+        memcpy(&plain[i], init, 16);
+        memcpy(&encrypt[i], &plain[i], 16);
 
-    // initialization
-    printf("plain:  ");
-    printState(state);
+        // encrypt
+        encrypt[i] ^= vec;
+        encode(&encrypt[i]);
+        vec = encrypt[i];
+    }
 
-    // encode
-    encode(&state);
-    printf("encode: ");
-    printState(state);
+    printf("plain:\n");
+    printState(plain[0]);
+    printf("encode:\n");
+    printState(encrypt[0]);
 
-    // decode
-    decode(&state);
-    printf("decode: ");
-    printState(state);
-    printf("\n");
+    // decrypt
+    for (int i = 0, vec = 0; i < GROUP; i++) {
+        memcpy(&decrypt[i], &encrypt[i], 16);
+        // decrypt
+        decode(&decrypt[i]);
+        decrypt[i] ^= vec;
+        vec = encrypt[i];
+    }
+    printf("decode:\n");
+    printState(decrypt[0]);
+
 #else
-    // TODO: start timer
-    
+    clock_t start = clock();
     // encrypt
     for (int i = 0, vec = 0; i < GROUP; i++) {
         for (int i = 0; i < 16; i++)
@@ -93,7 +93,11 @@ int main() {
         vec = encrypt[i];
     }
     
-    // TODO: end timer
+    clock_t end = clock();
+    double runtime = (double)(end - start) / (double)CLOCKS_PER_SEC;
+    double velocity = (double)(GROUP << 7) / (runtime * 1000000);
+    printf("runtime: %.6f sec\n", runtime);
+    printf("velocity: %.4f Mbps\n", velocity);
 
     for (int i = 0; i < GROUP; i++) {
         assert(plain[i] == decrypt[i]);
